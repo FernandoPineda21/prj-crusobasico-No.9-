@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "448825769840",
+    "firebase_url": "https://magicball-cb9f6.firebaseio.com",
+    "project_id": "magicball-cb9f6",
+    "storage_bucket": "magicball-cb9f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448825769840:android:1c0d49a91ea518a8",
+        "android_client_info": {
+          "package_name": "com.example.a8magicball"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448825769840-csf72p7v7vukto9ocsb2c4vl9rcddal7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.a8magicball",
+            "certificate_hash": "6eedea0fb142176aea818e78b78716b50d8e28ef"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmLGSgJABa_Wuue9J6PWtXOxdqt2CXew4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448825769840-p5hr5ado942947h1buk8cjlksp81qsq7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

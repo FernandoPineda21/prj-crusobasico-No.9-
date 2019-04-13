@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".MainActivity"
+    android:background="@android:color/background_dark">
+
+
+        <ImageView
+            android:id="@+id/btn8balloutside"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+
+
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/circle"
+            android:textSize="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btn8bal1inside"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+
+            android:layout_gravity="center"
+
+            android:background="@drawable/circle2"
+            android:text="8"
+            android:textSize="70dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn8balloutside"
+            app:layout_constraintEnd_toEndOf="@+id/btn8balloutside"
+            app:layout_constraintStart_toStartOf="@+id/btn8balloutside"
+            app:layout_constraintTop_toTopOf="@+id/btn8balloutside" />
+
+        <TextView
+            android:id="@+id/txt8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="8"
+            android:textAlignment="center"
+
+
+            android:textColor="#000000"
+            android:textSize="70dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn8bal1inside"
+            app:layout_constraintEnd_toEndOf="@+id/btn8bal1inside"
+            app:layout_constraintStart_toStartOf="@+id/btn8bal1inside"
+            app:layout_constraintTop_toTopOf="@+id/btn8bal1inside" />
+
+
+        <TextView
+            android:id="@+id/txtreconizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_margin="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Presione la Bola 8"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:textColorHint="#fffff1"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn8balloutside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+</android.support.constraint.ConstraintLayout>

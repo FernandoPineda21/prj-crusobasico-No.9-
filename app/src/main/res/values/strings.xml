@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">8 Magic Ball</string>
+    <string name="default_web_client_id" translatable="false">448825769840-p5hr5ado942947h1buk8cjlksp81qsq7.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">2169312583175890</string> <string name="fb_login_protocol_scheme">fb2169312583175890</string>
+</resources>
