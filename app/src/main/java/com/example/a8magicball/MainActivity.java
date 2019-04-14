@@ -18,6 +18,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -39,40 +41,39 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Delayed;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SensorEventListener, Animator.AnimatorListener, Animation.AnimationListener {
 
-    private String mensaje= "Presione la Bola 8";
+    private Animation rotation;
 
-    private String salir = "¿salir?";
+    private String mensaje = "Presione la Bola 8";
 
-    private Button buttonsignout;
+    private String salir = "salir";
+
+    private Button consultar;
 
     private GoogleSignInClient mGoogleSignInClient;
-    private GoogleSignInAccount googleSignInAccount;
-
 
     private ImageView rotacionblanco;
-    private ObjectAnimator animacion;
 
     private ImageView rotacionnegra;
-    private ObjectAnimator animacionreverse;
 
     private TextView texto8;
-    private ObjectAnimator animacionreversetexto;
 
-    private TextView respuesta;
+
     private int longitudpreunta = 69;
     private String respuestareconocimiento;
-    private SpeechRecognizer speechRecognizer;
+
 
     private TextView txtwordreconizer;
 
-    private int timeanimation = 1000;
+
     private TTSManager ttsManager = null;
 
     private SensorManager sensorManager;
     private Sensor sensor;
+
     private SensorEventListener sensorEventListener;
+
     private long lastupdate;
     private float last_x, last_y, last_z;
     private float shakeball = 30;
@@ -126,7 +127,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         user = firebaseAuth.getCurrentUser();
 
-
+        consultar = findViewById(R.id.btnconsultar);
+        consultar.setOnClickListener(this);
 
         rotacionblanco = findViewById(R.id.btn8bal1inside);
         rotacionblanco.setOnClickListener(this);
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(sensor.TYPE_ACCELEROMETER);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         txtwordreconizer = findViewById(R.id.txtreconizer);
 
@@ -147,47 +149,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ttsManager.init(this);
 
 
+        rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        rotation.setAnimationListener(this);
 
+        if (sensor != null) {
+            sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
 
+        } else {
+            consultar.setVisibility(View.VISIBLE);
 
+            Toast.makeText(this, "Sensor no disponible", Toast.LENGTH_SHORT).show();
 
-
-        sensorEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-
-
-                float x = event.values[0];
-                float y = event.values[1];
-                float z = event.values[2];
-                long curtime = System.currentTimeMillis();
-
-                long diftime = (curtime - lastupdate);
-
-                if (diftime > 100) {
-
-                    lastupdate = curtime;
-
-                    float speed = Math.abs(x + y + z - last_x - last_y - last_z);
-
-
-                    if (speed > shakeball) {
-                        correrAnimacion();
-                    }
-                    last_x = x;
-                    last_y = y;
-                    last_z = z;
-                    lastupdate = curtime;
-
-                }
-
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-            }
-        };
+        }
 
     }
 
@@ -199,20 +172,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
 
             case R.id.btn8balloutside:
+
+
                 onClick(rotacionblanco);
                 break;
             case R.id.txt8:
+
+
                 onClick(rotacionblanco);
                 break;
 
 
             case R.id.btn8bal1inside:
+
                 reconocerVoz();
 
 
-
-
                 break;
+
+            case R.id.btnconsultar:
+                generarRespuesta();
+                break;
+
         }
 
     }
@@ -226,18 +207,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (resultCode == RESULT_OK && data != null) {
 
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    primerarespuesta = result.get(0).toString();
-                    if (!ultimarespuesta.equals(primerarespuesta)) {
-                        if (primerarespuesta.length() < longitudpreunta) {
-                            txtwordreconizer.setText("¿" + result.get(0) + "?");
-                            ultimarespuesta = primerarespuesta;
+                    primerarespuesta = result.get(0);
+                    if (!primerarespuesta.equals(salir)) {
+                        if (!ultimarespuesta.equals(primerarespuesta)) {
+                            if (primerarespuesta.length() < longitudpreunta) {
+                                txtwordreconizer.setText("¿" + result.get(0) + "?");
+                                ttsManager.addQueue("Agite el celular");
+
+                                ultimarespuesta = primerarespuesta;
+                            } else {
+                                respuestareconocimiento = "La pregunta es extensa, Vuelve a intentar";
+                                Toast.makeText(this, respuestareconocimiento, Toast.LENGTH_SHORT).show();
+                                ttsManager.addQueue(respuestareconocimiento);
+                            }
                         } else {
-                            respuestareconocimiento = "La pregunta es extensa, Vuelve a intentar";
-                            ttsManager.addQueue(respuestareconocimiento);
+                            txtwordreconizer.setText("¿" + result.get(0) + "?");
+
+                            ttsManager.addQueue("Respuesta repetida");
+                            ultimarespuesta = result.get(0);
+                            respuestarepetida = result.get(0);
+                            Toast.makeText(this, "Respuesta repetida", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        txtwordreconizer.setText("Esta pregunta es igual a la anterior, hazme otra");
-                        ttsManager.addQueue("Respuesta repetida");
+                        LoginActivity login = new LoginActivity();
+                        login.signout(firebaseAuth);
+                        mGoogleSignInClient.signOut();
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+                        finish();
                     }
                 }
                 break;
@@ -259,67 +256,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return respuesta;
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ttsManager.shutDown();
     }
 
-    public void correrAnimacion() {
 
-            animacion = ObjectAnimator.ofFloat(rotacionblanco, "rotation", 0f, 540f);
-            animacion.setDuration(timeanimation);
+    public void generarRespuesta() {
 
-            animacionreverse = ObjectAnimator.ofFloat(rotacionnegra, "rotation", 540f, 0f);
-            animacionreverse.setDuration(timeanimation);
+        if (!txtwordreconizer.getText().equals(salir)) {
+            if (!txtwordreconizer.getText().equals(mensaje)) {
+                if (!respuestarepetida.equals(primerarespuesta)) {
 
-            animacionreversetexto = ObjectAnimator.ofFloat(texto8, "rotation", 0, 360f);
-            animacionreversetexto.setDuration(timeanimation);
+                    String answer = "";
+                    answer = generarRandom((Elementos));
+                    Toast.makeText(this, answer, Toast.LENGTH_SHORT).show();
+                    ttsManager.addQueue(answer);
 
-            AnimatorSet animatorSetRotation = new AnimatorSet();
-            animatorSetRotation.playTogether(animacion, animacionreverse, animacionreversetexto);
-            animatorSetRotation.start();
-
-
-            animacion.addListener(new AnimatorListenerAdapter() {
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-
-
-                    if (animacion.isRunning() == false) {
-                        if (!txtwordreconizer.getText().equals(salir)) {
-                            if (!txtwordreconizer.getText().equals(mensaje)) {
-                                if (!respuestarepetida.equals(primerarespuesta)) {
-                                    respuestareconocimiento = generarRandom(Elementos);
-                                    Toast.makeText(getApplicationContext(), respuestareconocimiento, Toast.LENGTH_SHORT).show();
-                                    ttsManager.addQueue(respuestareconocimiento);
-                                    respuestarepetida = primerarespuesta;
-                                } else {
-                                    ttsManager.addQueue("Respuesta repetida, Favor intentar con otra");
-
-                                }
-                            } else {
-                                ttsManager.addQueue("HAZME UNA PREGUNTA");
-                                return;
-                            }
-                        }
-                        else {
-                            LoginActivity login = new LoginActivity();
-                            login.signout(firebaseAuth);
-                            mGoogleSignInClient.signOut();
-                            startActivity(new Intent(MainActivity.this,LoginActivity.class));
-
-                            finish();
-                        }
-                    }
+                } else {
+                    ttsManager.addQueue("Respuesta repetida");
+                    Toast.makeText(this, "Respuesta repetida", Toast.LENGTH_SHORT).show();
 
                 }
-            });
+            } else {
+                ttsManager.addQueue("HAZME UNA PREGUNTA");
+                return;
+            }
+        } else {
+            LoginActivity login = new LoginActivity();
+            login.signout(firebaseAuth);
+            mGoogleSignInClient.signOut();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
-
+            finish();
+        }
 
     }
+
 
     public void reconocerVoz() {
         Intent intent;
@@ -351,5 +326,98 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        long curtime = System.currentTimeMillis();
+
+        long diftime = (curtime - lastupdate);
+
+        if (diftime > 100) {
+
+            lastupdate = curtime;
+
+            float speed = Math.abs(x + y + z - last_x - last_y - last_z);
+
+
+            if (speed > (shakeball)) {
+
+                if (!rotation.isFillEnabled()) {
+                    texto8.startAnimation(rotation);
+                    rotacionnegra.startAnimation(rotation);
+
+                }
+            }
+            last_x = x;
+            last_y = y;
+            last_z = z;
+            lastupdate = curtime;
+
+        }
+
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
+    @Override
+    public void onAnimationStart(Animator animation) {
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animation) {
+
+
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+
+        if (!txtwordreconizer.getText().equals(mensaje)) {
+
+            if (!respuestarepetida.equals(primerarespuesta) && !respuestarepetida.equals(ultimarespuesta)) {
+                ultimarespuesta = "";
+                respuestareconocimiento = generarRandom(Elementos);
+                Toast.makeText(getApplicationContext(), respuestareconocimiento, Toast.LENGTH_SHORT).show();
+                ttsManager.addQueue(respuestareconocimiento);
+                respuestarepetida = primerarespuesta;
+            } else {
+                ttsManager.addQueue("Respuesta repetida");
+                Toast.makeText(this, "Respuesta repetida", Toast.LENGTH_SHORT).show();
+
+            }
+        } else {
+            ttsManager.addQueue("HAZME UNA PREGUNTA");
+            return;
+        }
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
+    }
 }
 

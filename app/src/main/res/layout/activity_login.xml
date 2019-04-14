@@ -1,114 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
     android:background="#000000"
-    >
+    android:orientation="vertical"
+    android:weightSum="11"
 
-  <Button
-      android:id="@+id/btnsignin"
-      style="@style/colorhint"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="32dp"
-      android:layout_marginLeft="32dp"
-      android:layout_marginTop="24dp"
-      android:layout_marginEnd="32dp"
-      android:layout_marginRight="32dp"
-      android:background="@drawable/boton_redondos"
-      android:text="SIGN IN"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/etpass" />
-
-  <ImageView
-
-      android:id="@+id/imgvlogo"
-      android:layout_width="245dp"
-      android:layout_height="190dp"
-      android:layout_marginStart="8dp"
-      android:layout_marginLeft="8dp"
-      android:layout_marginTop="64dp"
-      android:layout_marginEnd="8dp"
-      android:layout_marginRight="8dp"
-      android:src="@mipmap/bola8"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-  <EditText
-      android:id="@+id/etemail"
-      style="@style/colorhint"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="32dp"
-      android:layout_marginLeft="32dp"
-      android:layout_marginTop="32dp"
-      android:layout_marginEnd="32dp"
-      android:layout_marginRight="32dp"
-      android:backgroundTint="@color/colorPrimary"
-      android:ems="10"
-      android:hint="EMAIL"
-      android:inputType="textEmailAddress"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="1.0"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/imgvlogo" />
-
-  <EditText
-      android:id="@+id/etpass"
-      style="@style/colorhint"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="32dp"
-      android:layout_marginLeft="32dp"
-      android:layout_marginTop="24dp"
-
-      android:layout_marginEnd="32dp"
-      android:layout_marginRight="32dp"
-      android:backgroundTint="@color/colorPrimary"
-      android:ems="10"
-      android:hint="PASSWORD"
-      android:inputType="textPassword"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.0"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/etemail" />
+    tools:context=".LoginActivity">
 
 
-  <com.google.android.gms.common.SignInButton
-      android:id="@+id/btnsigningoogle"
-      android:layout_width="match_parent"
-      android:layout_height="45dp"
-      android:layout_marginStart="32dp"
-      android:layout_marginLeft="32dp"
-      android:layout_marginTop="24dp"
-      android:layout_marginEnd="32dp"
-      android:layout_marginRight="32dp"
-      android:textAlignment="center"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.0"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btnsignup" />
+    <ImageView
 
-  <Button
-      android:id="@+id/btnsignup"
-      style="@style/colorhint"
-      android:layout_width="match_parent"
-      android:layout_height="46dp"
-      android:layout_marginStart="32dp"
-      android:layout_marginLeft="32dp"
-      android:layout_marginTop="24dp"
-      android:layout_marginEnd="32dp"
-      android:layout_marginRight="32dp"
+        android:id="@+id/imgvlogo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="4"
 
-      android:background="@drawable/boton_redondos"
-      android:text="SIGN UP"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btnsignin" />
+        android:src="@mipmap/bola8" />
 
-</android.support.constraint.ConstraintLayout>
+
+    <EditText
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="20sp"
+        android:id="@+id/etemail"
+
+        style="@style/colorhint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/colorPrimary"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/etpass"
+        style="@style/colorhint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+
+        android:backgroundTint="@color/colorPrimary"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+
+        />
+
+    <Button
+        android:layout_marginRight="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/btnsignin"
+
+        style="@style/colorhint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/boton_redondos"
+        android:text="Ingresar" />
+
+    <Button
+        android:layout_marginRight="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/btnsignup"
+        style="@style/colorhint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/boton_redondos"
+        android:text="Registrarse" />
+
+
+    <com.google.android.gms.common.SignInButton
+        android:layout_marginRight="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/btnsigningoogle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+</LinearLayout>

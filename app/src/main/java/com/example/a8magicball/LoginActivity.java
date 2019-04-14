@@ -1,7 +1,7 @@
 package com.example.a8magicball;
 
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -22,12 +22,8 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
+
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -44,7 +40,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.Arrays;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -57,7 +52,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private com.google.android.gms.common.SignInButton buttongoogle;
 
-    private com.facebook.login.widget.LoginButton buttonfacebook;
 
     private FirebaseAuth firebaseAuth;
 
@@ -67,9 +61,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private String TAGOOGLE = "simpletagggole";
 
-    private String TAGFACEBOOK = "simpletagggole";
 
-    private AlertDialog alert;
 
     private int GOOGLE_SIGN_IN = 101;
 
@@ -89,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
 
 
         loaderbar = new ProgressDialog(this);
@@ -99,8 +91,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttongoogle = findViewById(R.id.btnsigningoogle);
         firebaseAuth = FirebaseAuth.getInstance();
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -140,10 +130,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.btnsignup:
                 if (isNetDisponible()) {
-                    createUser();
+                    registrarUsuarioCorreo();
                 }
                 else if (isOnlineNet()) {
-                    createUser();
+                    registrarUsuarioCorreo();
                 }
                 else{
                     Toast.makeText(this, "No tienes Conexion", Toast.LENGTH_SHORT).show();
@@ -152,11 +142,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btnsignin:
                 if (isNetDisponible()) {
-                    iniciarSesion();
+                    iniciarSesionCorreo();
 
                 }
                 else if (isOnlineNet()) {
-                    iniciarSesion();
+                    iniciarSesionCorreo();
 
                 }
                 else{
@@ -164,10 +154,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btnsigningoogle:
-                loaderbar.setMessage("Cargando");
-                loaderbar.show();
-                signIn(buttongoogle);
+                if (isNetDisponible()) {
+
+                    loaderbar.setMessage("Cargando");
+                    loaderbar.show();
+                    signIn(buttongoogle);
+
+                }
+                else if (isOnlineNet()) {
+
+                    loaderbar.setMessage("Cargando");
+                    loaderbar.show();
+                    signIn(buttongoogle);
+                }
+                else{
+                    Toast.makeText(this, "No tienes Conexion", Toast.LENGTH_SHORT).show();
+                }
                 break;
+
 
 
         }
@@ -175,16 +179,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void createUser() {
+    public void registrarUsuarioCorreo() {
         email = editTextemail.getText().toString().trim();
         pass = editTextpass.getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "The email field must be filled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El campo email no debe estar vacío", Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(pass)) {
-            Toast.makeText(this, "The password field must be filled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El campo contraseña no debe estar vacío", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -224,16 +228,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    public void iniciarSesion() {
+    public void iniciarSesionCorreo() {
         email = editTextemail.getText().toString();
         pass = editTextpass.getText().toString();
 
         if (validartextview(editTextemail)) {
-            Toast.makeText(this, "The email field must be filled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El campo email no debe estar vacío", Toast.LENGTH_SHORT).show();
+
             return;
         }
         if (validartextview(editTextpass)) {
-            Toast.makeText(this, "The password field must be filled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El campo contraseña no debe estar vacío", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -364,9 +369,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void accesscredential(GoogleSignInAccount acct, AccessToken token){
-
-        AuthCredential credential = null;
+    public void accesscredential(GoogleSignInAccount acct){
+              AuthCredential credential = null;
 
 
         if (acct != null) {
@@ -374,10 +378,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             firebaseAuth(credential);
 
         }
-        else if (token != null){
-            credential = FacebookAuthProvider.getCredential(token.getToken());
-            firebaseAuth(credential);
-        }
+
 
     }
 
@@ -393,11 +394,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                accesscredential(account,null);
-                loaderbar.setMessage("Registrando usuario");
-                loaderbar.show();
+                accesscredential(account);
+
 
             } catch (ApiException e) {
+                loaderbar.dismiss();
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAGOOGLE, "Google sign in failed", e);
                 // ...
@@ -419,7 +420,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAGOOGLE, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-
+                            loaderbar.setMessage("Registrando usuario");
+                            loaderbar.show();
 
                             Toast.makeText(LoginActivity.this, user.getEmail() + " Connected", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -428,7 +430,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // If sign in fails, display a message to the user.
                             Log.w(TAGOOGLE, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Fallo la conexión", Toast.LENGTH_SHORT).show();
-
+                            loaderbar.dismiss();
                         }
 
                         // ...
